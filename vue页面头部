@@ -1,0 +1,184 @@
+<template>
+    <div class="head">
+      
+      <div class="left">
+a
+      </div>
+      <div>
+      <ul>
+       <li v-for="(item, index) in items"
+        :key="index"
+        ><span :class="{'bottom':ind==index}"  @click="changeBg(index)">{{item.message}}</span>//第一个添加默认样式
+       
+        </li>
+       
+     </ul>
+      </div>
+    
+      <div class="right">
+        <div class="wb">
+            <img src="../assets/index.png" alt="">
+        </div>
+        
+      </div>
+  </div>
+</template>
+<script>
+import axios from 'axios'
+import qs from 'qs'
+import Vue from 'vue'
+export default {
+  name: 'HelloWorld',
+  data () {
+    return {
+      theme2: 'dark',
+      URL:"http:",
+      items:[
+        {message:'首页'},
+        {message:'产品'},
+        {message:'资讯中心'},
+        {message:'帮助中心'},
+        {message:'官方贴吧'}
+      ],
+      value1:'0',
+      appList:'',
+      childrenList:'',
+      isActive:true,
+      //第一个添加默认样式
+      ind:''
+    }
+  },
+  mounted () {
+      
+  },
+  created () {
+		// this.GetCategoryList()
+		},
+  methods: {
+    GetCategoryList(){
+      this.$http({           
+                        method:'GET',
+                        url:this.URL+'/Home/GetCategoryList',
+                        emulateJSON: true  
+                    }).then(function(response){  
+                         this.appList= JSON.parse(response.bodyText)   
+                         this.list = this.appList
+                        console.log( this.appList)                 
+                    },function(error){
+                    })
+    },
+    selectStyle(item,name,event){
+       this.$nextTick(function() {
+            this.items.forEach(function(item) {
+                Vue.set(item,'active',false)
+            });
+            item.active = true;
+          Vue.set(item,'active',true)
+        })
+     
+ 
+
+    },
+selectStyle2(item,name,event){
+   event.stopPropagation()
+       console.log(item.id)
+
+    },
+  remove(i){
+    console.log(i)
+    this.items.splice(i, 1)
+  },
+  getImg(name){
+                    console.log(name)
+                    // this.$router.push('/content/'+name)
+                     axios({        
+                        url:this.URL+'/Home/GetMaintainContentList?catId='+name,   
+                        method:'get'
+                    }).then((response)=>{  
+                        this.childrenList =  response.data.apkList
+                    })
+               },
+  //实现默认第一个li渲染CSS
+  changeBg(index){
+    this.ind = index
+               }
+   
+
+  }
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style  lang="scss"  scoped>
+$margin:240px;
+$width:50px;
+.ivu-menu{
+ position: fixed;
+}
+.center{
+  width: 100%;
+  margin-left:$margin; 
+  
+}
+
+.head{
+  height: 133px;
+  width: 100%;
+  line-height: 133px;
+  overflow: hidden;
+    ul{
+      overflow: hidden;
+    }
+    li{
+      text-align: center;
+      font-size: 18px;
+      float: left;
+      margin:0 40px;
+     
+      span{
+         cursor: pointer;
+         padding: 15px 0;
+      }
+    }
+    div{
+      float: left;
+      overflow: hidden;
+    }
+    
+}
+button{
+  width: $width;
+}
+.bottom{
+   border-bottom: 2px solid #61ba2b;
+   color:#61ba2b;
+}
+.right{
+  background:#61ba2b; 
+ div{
+   height: 30px;
+
+ }
+ .wb{
+   display: inline;
+   
+ }
+ img:hover{
+   
+      
+      top: -33px;
+    
+ }
+ img{
+   position: relative;
+   top: 0;
+   left:-200px;
+   transition:top 1s;
+   }
+ }
+   @media screen and (max-width: 1090px) {
+            .head{
+              width: 1091px;
+            }
+        }
+</style>
